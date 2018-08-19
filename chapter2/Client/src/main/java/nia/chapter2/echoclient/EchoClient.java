@@ -58,6 +58,8 @@ public class EchoClient {
 
         final String host = args[0];
         final int port = Integer.parseInt(args[1]);
+        System.err.println(host);
+        System.err.println(port);
         new EchoClient(host, port).start();
     }
 }

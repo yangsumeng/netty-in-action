@@ -40,19 +40,18 @@ public class EchoServer {
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(group)
-                .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(port))
+                .channel(NioServerSocketChannel.class)      //指定所使用的 NIO 传输 Channel
+                .localAddress(new InetSocketAddress(port))  //指定地址
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(serverHandler);
+                        ch.pipeline().addLast(serverHandler);//@Shareable  总是使用同一个实例（单例？）
                     }
                 });
 
-            ChannelFuture f = b.bind().sync();
-            System.out.println(EchoServer.class.getName() +
-                " started and listening for connections on " + f.channel().localAddress());
-            f.channel().closeFuture().sync();
+            ChannelFuture f = b.bind().sync(); //bind绑定  sync当前Thread阻塞直到完成
+            System.out.println(EchoServer.class.getName() + " started and listening for connections on " + f.channel().localAddress());
+            f.channel().closeFuture().sync();  //获取closeFuture  sync阻塞直到完成
         } finally {
             group.shutdownGracefully().sync();
         }
